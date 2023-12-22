@@ -1,0 +1,12 @@
+{
+  "item.reel.modular_fishing_rod": "Modular Fishing Rod",
+  "item.reel.oak_rod": "Oak Rod",
+  "item.reel.wooden_reel": "Wooden Reel",
+  "item.reel.iron_hook": "Iron Hook",
+  "item.reel.spiked_hook": "Spiked Hook",
+  "block.reel.rod_table": "Fishing Rod Bench",
+  "rod.byCreator": "by %s",
+  "rod.rod": "Rod: %s",
+  "rod.reel": "Reel: %s",
+  "rod.hook": "Hook: %s"
+}
