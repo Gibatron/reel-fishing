@@ -7,14 +7,14 @@ import net.minecraft.util.math.random.Random;
 
 import java.util.List;
 
-public record FishType(Identifier itemId, float speed, float temper, Identifier minigamePatternId, WeightData weight, List<Identifier> categories) {
+public record FishType(Identifier itemId, float speed, float temper, Identifier minigamePatternId, WeightData weight, List<CategoryData> categories) {
     public static final Codec<FishType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("item").forGetter(FishType::itemId),
             Codec.FLOAT.fieldOf("speed").forGetter(FishType::speed),
             Codec.FLOAT.fieldOf("temper").forGetter(FishType::temper),
             Identifier.CODEC.fieldOf("minigame_pattern").forGetter(FishType::minigamePatternId),
             WeightData.CODEC.fieldOf("weight").forGetter(FishType::weight),
-            Codec.list(Identifier.CODEC).fieldOf("categories").forGetter(FishType::categories)
+            Codec.list(CategoryData.CODEC).fieldOf("categories").forGetter(FishType::categories)
     ).apply(instance, FishType::new));
 
     public record WeightData(int min, int max) {
@@ -26,5 +26,12 @@ public record FishType(Identifier itemId, float speed, float temper, Identifier 
         public float getRandomWeight(Random random) {
             return random.nextBetween(min, max) + random.nextFloat();
         }
+    }
+
+    public record CategoryData(Identifier id, int weight) {
+        public static final Codec<CategoryData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Identifier.CODEC.fieldOf("id").forGetter(CategoryData::id),
+                Codec.INT.fieldOf("weight").forGetter(CategoryData::weight)
+        ).apply(instance, CategoryData::new));
     }
 }

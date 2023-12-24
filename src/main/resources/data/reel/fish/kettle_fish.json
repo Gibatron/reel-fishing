@@ -1,16 +1,16 @@
 {
-	"item": "reel:gilded_fish",
+	"item": "reel:kettle_fish",
 	"speed": 1,
-	"temper": 1,
+	"temper": 2,
 	"minigame_pattern": "reel:basic_pattern",
 	"weight": {
 		"min": 5,
-		"max": 11
+		"max": 20
 	},
 	"categories": [
 		{
 			"id": "reel:shallow",
-			"weight": 4
+			"weight": 10
 		}
 	]
 }

@@ -3,6 +3,7 @@ package dev.mrturtle.reel;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
+import dev.mrturtle.reel.fish.FishCategory;
 import dev.mrturtle.reel.fish.FishType;
 import dev.mrturtle.reel.gui.GuiElements;
 import dev.mrturtle.reel.item.ModularFishingRodItem;
@@ -22,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ReelFishing implements ModInitializer {
@@ -42,10 +42,11 @@ public class ReelFishing implements ModInitializer {
 	public static final HashMap<Item, Identifier> HOOK_ITEMS_TO_IDS = new HashMap<>();
 	public static final HashMap<Identifier, Item> HOOK_IDS_TO_ITEMS = new HashMap<>();
 
-	// Fishes
+	// Fish
 	public static final HashMap<Identifier, FishType> FISH_TYPES = new HashMap<>();
-	public static final HashMap<Identifier, ArrayList<Identifier>> FISH_CATEGORIES_TO_IDS = new HashMap<>();
+	public static final HashMap<Identifier, HashMap<Identifier, Integer>> FISH_CATEGORIES_TO_IDS = new HashMap<>();
 	public static final HashMap<Identifier, Item> FISH_IDS_TO_ITEMS = new HashMap<>();
+	public static final HashMap<Identifier, FishCategory> FISH_CATEGORIES = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
@@ -146,6 +147,7 @@ public class ReelFishing implements ModInitializer {
 		FISH_TYPES.clear();
 		FISH_CATEGORIES_TO_IDS.clear();
 		FISH_IDS_TO_ITEMS.clear();
+		FISH_CATEGORIES.clear();
 		var ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
 		// Load fish
 		for (var resource : server.getResourceManager().findResources("fish", (id) -> id.getPath().endsWith(".json")).entrySet()) {
@@ -154,14 +156,25 @@ public class ReelFishing implements ModInitializer {
 				FishType fishType = FishType.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
 				Item fishItem = Registries.ITEM.get(fishType.itemId());
 				FISH_TYPES.put(fishId, fishType);
-				for (Identifier categoryId : fishType.categories()) {
-					ArrayList<Identifier> list = FISH_CATEGORIES_TO_IDS.getOrDefault(categoryId, new ArrayList<>());
-					list.add(fishId);
-					FISH_CATEGORIES_TO_IDS.put(categoryId, list);
+				for (FishType.CategoryData categoryData : fishType.categories()) {
+					HashMap<Identifier, Integer> map = FISH_CATEGORIES_TO_IDS.getOrDefault(categoryData.id(), new HashMap<>());
+					map.put(fishId, categoryData.weight());
+					FISH_CATEGORIES_TO_IDS.put(categoryData.id(), map);
 				}
 				FISH_IDS_TO_ITEMS.put(fishId, fishItem);
 			} catch (Throwable e) {
 				LOGGER.warn("Failed to parse fish type {}!", resource.getKey().toString());
+				e.printStackTrace();
+			}
+		}
+		// Load fish categories
+		for (var resource : server.getResourceManager().findResources("fish_categories", (id) -> id.getPath().endsWith(".json")).entrySet()) {
+			Identifier categoryId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("fish_categories/".length(), resource.getKey().getPath().length() - 5));
+			try {
+				FishCategory fishCategory = FishCategory.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
+				FISH_CATEGORIES.put(categoryId, fishCategory);
+			} catch (Throwable e) {
+				LOGGER.warn("Failed to parse fish category {}!", resource.getKey().toString());
 				e.printStackTrace();
 			}
 		}

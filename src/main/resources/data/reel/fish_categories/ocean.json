@@ -1,0 +1,4 @@
+{
+	"biome_requirement": "minecraft:is_ocean",
+	"dimension_requirement": "minecraft:overworld"
+}

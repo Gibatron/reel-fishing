@@ -1,0 +1,16 @@
+{
+	"item": "reel:haliblock",
+	"speed": 1,
+	"temper": 4,
+	"minigame_pattern": "reel:basic_pattern",
+	"weight": {
+		"min": 25,
+		"max": 60
+	},
+	"categories": [
+		{
+			"id": "reel:ocean",
+			"weight": 2
+		}
+	]
+}
