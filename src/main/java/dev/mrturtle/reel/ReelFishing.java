@@ -4,9 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import dev.mrturtle.reel.fish.FishCategory;
+import dev.mrturtle.reel.fish.FishPattern;
 import dev.mrturtle.reel.fish.FishType;
 import dev.mrturtle.reel.gui.GuiElements;
 import dev.mrturtle.reel.item.ModularFishingRodItem;
+import dev.mrturtle.reel.item.UIItem;
 import dev.mrturtle.reel.rod.HookType;
 import dev.mrturtle.reel.rod.ReelType;
 import dev.mrturtle.reel.rod.RodType;
@@ -47,6 +49,7 @@ public class ReelFishing implements ModInitializer {
 	public static final HashMap<Identifier, HashMap<Identifier, Integer>> FISH_CATEGORIES_TO_IDS = new HashMap<>();
 	public static final HashMap<Identifier, Item> FISH_IDS_TO_ITEMS = new HashMap<>();
 	public static final HashMap<Identifier, FishCategory> FISH_CATEGORIES = new HashMap<>();
+	public static final HashMap<Identifier, FishPattern> FISH_PATTERNS = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
@@ -66,10 +69,14 @@ public class ReelFishing implements ModInitializer {
 			}
 			((ModularFishingRodItem) ReelItems.MODULAR_FISHING_ROD_ITEM).registerModels();
 			LOGGER.info("Created modular fishing rod models!");
+			for (String textureId : UIItem.TEXTURES.keySet()) {
+				registerGuiModel(builder, textureId);
+			}
 		});
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ReelFishing.load(server));
 		ReelItems.initialize();
 		ReelBlocks.initialize();
+		ReelEntities.initialize();
 		GuiElements.initialize();
 	}
 
@@ -178,6 +185,17 @@ public class ReelFishing implements ModInitializer {
 				e.printStackTrace();
 			}
 		}
+		// Load fish patterns
+		for (var resource : server.getResourceManager().findResources("fish_patterns", (id) -> id.getPath().endsWith(".json")).entrySet()) {
+			Identifier patternId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("fish_patterns/".length(), resource.getKey().getPath().length() - 5));
+			try {
+				FishPattern fishPattern = FishPattern.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
+				FISH_PATTERNS.put(patternId, fishPattern);
+			} catch (Throwable e) {
+				LOGGER.warn("Failed to parse fish category {}!", resource.getKey().toString());
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void registerModel(ResourcePackBuilder builder, Identifier rodId, Identifier reelId, Identifier hookId) {
@@ -202,6 +220,15 @@ public class ReelFishing implements ModInitializer {
 		model.add("textures", textures);
 		builder.addData("assets/%s/models/item/%s.json".formatted(rodId.getNamespace(), id), model.toString().getBytes(StandardCharsets.UTF_8));
 		LOGGER.info("{} {}", id, model);
+	}
+
+	public static void registerGuiModel(ResourcePackBuilder builder, String textureId) {
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", "item/handheld");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("layer0", id("item/gui/%s".formatted(textureId)).toString());
+		model.add("textures", textures);
+		builder.addData("assets/reel/models/gui/%s.json".formatted(textureId), model.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public static Identifier getRodFromItem(Item item) {

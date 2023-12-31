@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.35,
+  "ingredient": {
+	"item": "reel:manta_ray"
+  },
+  "result": "reel:cooked_manta_ray"
+}

@@ -1,0 +1,16 @@
+{
+  "item": "reel:tuna_melt",
+  "speed": 1,
+  "temper": 3,
+  "minigame_pattern": "reel:single_pattern",
+  "weight": {
+	"min": 10,
+	"max": 20
+  },
+  "categories": [
+	{
+	  "id": "reel:boiling",
+	  "weight": 2
+	}
+  ]
+}

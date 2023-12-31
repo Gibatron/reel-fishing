@@ -2,7 +2,7 @@
 	"item": "reel:gilded_fish",
 	"speed": 1,
 	"temper": 1,
-	"minigame_pattern": "reel:basic_pattern",
+	"minigame_pattern": "reel:single_pattern",
 	"weight": {
 		"min": 5,
 		"max": 11

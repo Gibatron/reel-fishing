@@ -2,7 +2,7 @@
 	"item": "reel:haliblock",
 	"speed": 1,
 	"temper": 4,
-	"minigame_pattern": "reel:basic_pattern",
+	"minigame_pattern": "reel:dual_pattern",
 	"weight": {
 		"min": 25,
 		"max": 60

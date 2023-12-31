@@ -1,0 +1,16 @@
+{
+  "item": "reel:jester_fish",
+  "speed": 3,
+  "temper": 2,
+  "minigame_pattern": "reel:quad_pattern",
+  "weight": {
+	"min": 1,
+	"max": 2
+  },
+  "categories": [
+	{
+	  "id": "reel:tropical",
+	  "weight": 10
+	}
+  ]
+}

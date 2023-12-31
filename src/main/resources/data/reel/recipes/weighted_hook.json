@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"i": {
+	  "item": "minecraft:iron_ingot"
+	},
+	".": {
+	  "item": "minecraft:iron_nugget"
+	}
+  },
+  "pattern": [
+	"  i",
+	". .",
+	" . "
+  ],
+  "result": {
+	"item": "reel:weighted_hook"
+  },
+  "show_notification": true
+}

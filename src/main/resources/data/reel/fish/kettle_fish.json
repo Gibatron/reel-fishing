@@ -2,7 +2,7 @@
 	"item": "reel:kettle_fish",
 	"speed": 1,
 	"temper": 2,
-	"minigame_pattern": "reel:basic_pattern",
+	"minigame_pattern": "reel:tri_pattern",
 	"weight": {
 		"min": 5,
 		"max": 20

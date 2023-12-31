@@ -2,14 +2,17 @@
 	"schemaVersion": 1,
 	"id": "reel",
 	"version": "${version}",
-	"name": "ReelFishing",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Reel Fishing",
+	"description": "Reel Fishing adds a fishing minigame, modular fishing rods, new fish, terrible puns and more.",
 	"authors": [
 		"MrTurtle",
-		"Olibromide"
+		"Olibromide",
+	  	"MoonlitLamps"
 	],
 	"contact": {
-
+		"homepage": "https://modrinth.com/mod/reel",
+	  	"sources": "https://github.com/Gibatron/reel-fishing",
+	  	"issues": "https://github.com/Gibatron/reel-fishing/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/reel/icon.png",
@@ -23,7 +26,7 @@
 		"reel.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.15.2",
+		"fabricloader": "*",
 		"minecraft": "~1.20.4",
 		"java": ">=17",
 		"fabric-api": "*"

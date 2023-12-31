@@ -1,0 +1,6 @@
+{
+  "biome_requirement": "minecraft:is_ocean",
+  "dimension_requirement": "minecraft:overworld",
+  "weighted_requirement": true,
+  "priority": "high"
+}

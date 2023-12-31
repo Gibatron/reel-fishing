@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"p": {
+	  "item": "minecraft:dark_oak_planks"
+	}
+  },
+  "pattern": [
+	"  p",
+	" p ",
+	"p  "
+  ],
+  "result": {
+	"item": "reel:dark_oak_rod"
+  },
+  "show_notification": true
+}

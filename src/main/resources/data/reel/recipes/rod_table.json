@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"s": {
+	  "item": "minecraft:string"
+	},
+	"S": {
+	  "tag": "minecraft:wooden_slabs"
+	},
+	"P": {
+	  "tag": "minecraft:planks"
+	}
+  },
+  "pattern": [
+	"ss",
+	"SS",
+	"PP"
+  ],
+  "result": {
+	"item": "reel:rod_table"
+  },
+  "show_notification": true
+}

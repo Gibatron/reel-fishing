@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": {
+	"item": "reel:manta_ray"
+  },
+  "result": "reel:cooked_manta_ray"
+}

@@ -1,6 +1,7 @@
 package dev.mrturtle.reel.fish;
 
 import dev.mrturtle.reel.ReelFishing;
+import dev.mrturtle.reel.rod.HookType;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class FishHelper {
-	public static Identifier getCategoryFromConditions(RegistryEntry<Biome> biome, Identifier dimensionId) {
+	public static Identifier getCategoryFromConditions(RegistryEntry<Biome> biome, Identifier dimensionId, HookType hookType) {
 		Identifier bestCategory = null;
 		FishCategory.Priority bestPriority = null;
 		// Check every fish category to see if it is eligible to be caught
@@ -29,6 +30,26 @@ public class FishHelper {
 				var biomeTag = TagKey.of(RegistryKeys.BIOME, category.biomeRequirement().get());
 				if (!biome.isIn(biomeTag))
 					continue;
+			}
+			// Does it require a weighted hook?
+			if (category.weightedRequirement().isPresent()) {
+				if (category.weightedRequirement().get()) {
+					// Do we have a weighted hook?
+					if (hookType.weighted().isEmpty())
+						continue;
+					if (!hookType.weighted().get())
+						continue;
+				}
+			}
+			// Does it require a fireproof hook?
+			if (category.fireproofRequirement().isPresent()) {
+				if (category.fireproofRequirement().get()) {
+					// Do we have a fireproof hook?
+					if (hookType.fireproof().isEmpty())
+						continue;
+					if (!hookType.fireproof().get())
+						continue;
+				}
 			}
 			// This is an eligible category
 			// Check if it has a higher priority than the best category, if it does, or we don't have a best category, continue

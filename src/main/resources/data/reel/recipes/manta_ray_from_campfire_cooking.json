@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "ingredient": {
+	"item": "reel:manta_ray"
+  },
+  "result": "reel:cooked_manta_ray"
+}

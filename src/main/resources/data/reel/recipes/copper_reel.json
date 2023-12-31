@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"c": {
+	  "item": "minecraft:copper_ingot"
+	},
+	"$": {
+	  "item": "reel:bonework_mechanism"
+	},
+	"S": {
+	  "item": "minecraft:string"
+	}
+  },
+  "pattern": [
+	" cS",
+	"c$c",
+	" c "
+  ],
+  "result": {
+	"item": "reel:copper_reel"
+  },
+  "show_notification": true
+}

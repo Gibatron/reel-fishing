@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"p": {
+	  "item": "minecraft:bamboo"
+	}
+  },
+  "pattern": [
+	"  p",
+	" p ",
+	"p  "
+  ],
+  "result": {
+	"item": "reel:bamboo_rod"
+  },
+  "show_notification": true
+}

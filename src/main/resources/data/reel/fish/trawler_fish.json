@@ -1,0 +1,16 @@
+{
+  "item": "reel:trawler_fish",
+  "speed": 3,
+  "temper": 4,
+  "minigame_pattern": "reel:quad_pattern",
+  "weight": {
+	"min": 50,
+	"max": 90
+  },
+  "categories": [
+	{
+	  "id": "reel:deep",
+	  "weight": 5
+	}
+  ]
+}

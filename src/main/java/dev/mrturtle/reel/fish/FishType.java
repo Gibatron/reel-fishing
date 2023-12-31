@@ -17,6 +17,14 @@ public record FishType(Identifier itemId, float speed, float temper, Identifier 
             Codec.list(CategoryData.CODEC).fieldOf("categories").forGetter(FishType::categories)
     ).apply(instance, FishType::new));
 
+    public boolean isInCategory(Identifier categoryId) {
+        for (CategoryData category : categories) {
+            if (category.id == categoryId)
+                return true;
+        }
+        return false;
+    }
+
     public record WeightData(int min, int max) {
         public static final Codec<WeightData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("min").forGetter(WeightData::min),

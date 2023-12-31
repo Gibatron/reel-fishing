@@ -1,0 +1,16 @@
+{
+  "item": "reel:ice_cube_fish",
+  "speed": 2,
+  "temper": 1,
+  "minigame_pattern": "reel:single_pattern",
+  "weight": {
+	"min": 50,
+	"max": 90
+  },
+  "categories": [
+	{
+	  "id": "reel:cold",
+	  "weight": 2
+	}
+  ]
+}

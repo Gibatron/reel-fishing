@@ -1,0 +1,6 @@
+{
+  "item": "reel:birch_rod",
+  "rod_pattern": "reel:rod_double_pattern",
+  "stability": 0.1,
+  "max_fish_weight": 15
+}

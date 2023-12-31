@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"p": {
+	  "item": "minecraft:cherry_planks"
+	}
+  },
+  "pattern": [
+	"  p",
+	" p ",
+	"p  "
+  ],
+  "result": {
+	"item": "reel:cherry_rod"
+  },
+  "show_notification": true
+}

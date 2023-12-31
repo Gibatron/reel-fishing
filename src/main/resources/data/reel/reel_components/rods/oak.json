@@ -1,5 +1,6 @@
 {
   "item": "reel:oak_rod",
-  "field_of_view": 270,
+  "rod_pattern": "reel:rod_40_pattern",
+  "stability": 0.05,
   "max_fish_weight": 15
 }

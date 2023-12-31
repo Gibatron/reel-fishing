@@ -1,0 +1,20 @@
+{
+  "providers": [
+	{
+	  "type": "space",
+	  "advances": {
+		"a": -8,
+		"c": -49
+	  }
+	},
+	{
+	  "type": "bitmap",
+	  "file": "reel:gui/rod_table/main.png",
+	  "ascent": 13,
+	  "height": 71,
+	  "chars": [
+		"b"
+	  ]
+	}
+  ]
+}

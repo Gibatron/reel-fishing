@@ -1,0 +1,16 @@
+{
+  "item": "reel:squish_fish",
+  "speed": 2,
+  "temper": 3,
+  "minigame_pattern": "reel:single_pattern",
+  "weight": {
+	"min": 5,
+	"max": 20
+  },
+  "categories": [
+	{
+	  "id": "reel:deep",
+	  "weight": 4
+	}
+  ]
+}

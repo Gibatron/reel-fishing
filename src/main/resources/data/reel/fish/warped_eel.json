@@ -1,0 +1,20 @@
+{
+  "item": "reel:warped_eel",
+  "speed": 4,
+  "temper": 3,
+  "minigame_pattern": "reel:quad_pattern",
+  "weight": {
+	"min": 15,
+	"max": 30
+  },
+  "categories": [
+	{
+	  "id": "reel:boiling",
+	  "weight": 5
+	},
+	{
+	  "id": "reel:fast",
+	  "weight": 0
+	}
+  ]
+}

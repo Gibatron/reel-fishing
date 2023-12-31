@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.35,
+  "ingredient": {
+	"item": "reel:abyssal_glow_squid"
+  },
+  "result": "reel:cooked_abyssal_glow_squid"
+}

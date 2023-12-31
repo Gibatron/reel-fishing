@@ -1,0 +1,20 @@
+{
+  "item": "reel:baby_oarfish",
+  "speed": 7,
+  "temper": 4,
+  "minigame_pattern": "reel:half_pattern",
+  "weight": {
+	"min": 30,
+	"max": 65
+  },
+  "categories": [
+	{
+	  "id": "reel:deep",
+	  "weight": 1
+	},
+	{
+	  "id": "reel:fast",
+	  "weight": 0
+	}
+  ]
+}

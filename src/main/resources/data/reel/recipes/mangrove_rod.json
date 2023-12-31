@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"p": {
+	  "item": "minecraft:mangrove_planks"
+	}
+  },
+  "pattern": [
+	"  p",
+	" p ",
+	"p  "
+  ],
+  "result": {
+	"item": "reel:mangrove_rod"
+  },
+  "show_notification": true
+}

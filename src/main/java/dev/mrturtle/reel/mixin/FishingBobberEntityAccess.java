@@ -7,4 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(FishingBobberEntity.class)
 public interface FishingBobberEntityAccess {
     @Accessor int getHookCountdown();
+    @Accessor int getWaitCountdown();
+    @Accessor void setWaitCountdown(int waitCountdown);
 }

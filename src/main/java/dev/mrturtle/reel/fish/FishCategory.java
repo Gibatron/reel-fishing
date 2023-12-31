@@ -9,11 +9,13 @@ import java.util.Optional;
 
 import static net.minecraft.util.StringIdentifiable.createCodec;
 
-public record FishCategory(Optional<Identifier> biomeRequirement, Optional<Identifier> dimensionRequirement, Priority priority) {
+public record FishCategory(Optional<Identifier> biomeRequirement, Optional<Identifier> dimensionRequirement, Optional<Boolean> weightedRequirement, Optional<Boolean> fireproofRequirement, Priority priority) {
 	public static final Codec<Priority> PRIORITY_CODEC = createCodec(Priority::values);
 	public static final Codec<FishCategory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Identifier.CODEC.optionalFieldOf("biome_requirement").forGetter(FishCategory::biomeRequirement),
 			Identifier.CODEC.optionalFieldOf("dimension_requirement").forGetter(FishCategory::dimensionRequirement),
+			Codec.BOOL.optionalFieldOf("weighted_requirement").forGetter(FishCategory::weightedRequirement),
+			Codec.BOOL.optionalFieldOf("fireproof_requirement").forGetter(FishCategory::fireproofRequirement),
 			PRIORITY_CODEC.optionalFieldOf("priority", Priority.DEFAULT).forGetter(FishCategory::priority)
 	).apply(instance, FishCategory::new));
 

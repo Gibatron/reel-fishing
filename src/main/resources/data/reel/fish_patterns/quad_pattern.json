@@ -1,0 +1,20 @@
+{
+  "chunks": [
+	{
+	  "start_angle": 20,
+	  "end_angle": 70
+	},
+	{
+	  "start_angle": 110,
+	  "end_angle": 160
+	},
+	{
+	  "start_angle": 200,
+	  "end_angle": 250
+	},
+	{
+	  "start_angle": 290,
+	  "end_angle": 340
+	}
+  ]
+}

@@ -1,11 +1,15 @@
 package dev.mrturtle.reel.item;
 
 import dev.mrturtle.reel.ReelFishing;
+import dev.mrturtle.reel.ReelItems;
+import dev.mrturtle.reel.access.PlayerEntityAccess;
+import dev.mrturtle.reel.entity.MinigameFishingBobberEntity;
 import dev.mrturtle.reel.entity.ModularFishingBobberEntity;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -47,6 +51,13 @@ public class ModularFishingRodItem extends Item implements PolymerItem {
         // You must have a rod, reel and hook to cast your rod
         if (nbt.getString(ROD_KEY).isEmpty() || nbt.getString(REEL_KEY).isEmpty() || nbt.getString(HOOK_KEY).isEmpty())
             return TypedActionResult.pass(itemStack);
+        // Check if a minigame bobber currently exists
+        if (((PlayerEntityAccess) user).getMinigameBobber() != null) {
+            MinigameFishingBobberEntity bobber = ((PlayerEntityAccess) user).getMinigameBobber();
+            bobber.useRod(itemStack);
+            return TypedActionResult.success(itemStack);
+        }
+        // Check if a regular bobber exists
         if (user.fishHook != null) {
             world.playSound(
                     null,
@@ -136,6 +147,15 @@ public class ModularFishingRodItem extends Item implements PolymerItem {
         if (!modelData.containsKey(id))
             return -1;
         return modelData.get(id).value();
+    }
+
+    public static boolean attemptToResetCastState(ItemStack stack) {
+        if (!stack.isOf(ReelItems.MODULAR_FISHING_ROD_ITEM))
+            return false;
+        if (!stack.getOrCreateNbt().getBoolean(ModularFishingRodItem.CAST_KEY))
+            return false;
+        stack.getOrCreateNbt().putBoolean(ModularFishingRodItem.CAST_KEY, false);
+        return true;
     }
 
     public void registerModels() {

@@ -1,0 +1,6 @@
+{
+  "item": "reel:warped_rod",
+  "rod_pattern": "reel:rod_warped_pattern",
+  "stability": 0.4,
+  "max_fish_weight": 15
+}

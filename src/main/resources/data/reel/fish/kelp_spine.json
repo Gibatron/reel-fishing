@@ -1,0 +1,16 @@
+{
+  "item": "reel:kelp_spine",
+  "speed": 3,
+  "temper": 2,
+  "minigame_pattern": "reel:dual_pattern",
+  "weight": {
+	"min": 3,
+	"max": 8
+  },
+  "categories": [
+	{
+	  "id": "reel:ocean",
+	  "weight": 6
+	}
+  ]
+}

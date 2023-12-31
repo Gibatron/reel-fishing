@@ -1,0 +1,16 @@
+{
+  "item": "reel:rose_eye",
+  "speed": 1,
+  "temper": 4,
+  "minigame_pattern": "reel:dual_pattern",
+  "weight": {
+    "min": 15,
+    "max": 40
+  },
+  "categories": [
+    {
+      "id": "reel:shallow",
+      "weight": 1
+    }
+  ]
+}

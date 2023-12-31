@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"s": {
+	  "item": "minecraft:stick"
+	},
+	"i": {
+	  "item": "minecraft:iron_nugget"
+	},
+	"S": {
+	  "item": "minecraft:string"
+	}
+  },
+  "pattern": [
+	" sS",
+	"sis",
+	" s "
+  ],
+  "result": {
+	"item": "reel:wooden_reel"
+  },
+  "show_notification": true
+}

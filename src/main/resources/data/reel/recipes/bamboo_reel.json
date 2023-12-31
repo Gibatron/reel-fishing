@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"b": {
+	  "item": "minecraft:bamboo"
+	},
+	"$": {
+	  "item": "reel:bonework_mechanism"
+	},
+	"S": {
+	  "item": "minecraft:string"
+	}
+  },
+  "pattern": [
+	" bS",
+	"b$b",
+	" b "
+  ],
+  "result": {
+	"item": "reel:bamboo_reel"
+  },
+  "show_notification": true
+}

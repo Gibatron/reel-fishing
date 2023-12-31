@@ -1,0 +1,5 @@
+{
+  "dimension_requirement": "minecraft:nether",
+  "fireproof_requirement": true,
+  "priority": "low"
+}

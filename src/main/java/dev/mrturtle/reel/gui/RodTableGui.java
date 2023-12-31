@@ -2,7 +2,7 @@ package dev.mrturtle.reel.gui;
 
 import dev.mrturtle.reel.ReelFishing;
 import dev.mrturtle.reel.ReelItems;
-import dev.mrturtle.reel.item.ButtonItem;
+import dev.mrturtle.reel.item.UIItem;
 import dev.mrturtle.reel.item.ModularFishingRodItem;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import net.minecraft.inventory.Inventory;
@@ -13,7 +13,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class RodTableGui extends SimpleGui implements InventoryChangedListener {
@@ -68,6 +70,7 @@ public class RodTableGui extends SimpleGui implements InventoryChangedListener {
                 return 1;
             }
         });
+        setTitle(Text.literal("ab").setStyle(Style.EMPTY.withColor(Formatting.WHITE).withFont(ReelFishing.id("rod_table_gui"))));
     }
 
     public void assembleRod() {
@@ -107,12 +110,12 @@ public class RodTableGui extends SimpleGui implements InventoryChangedListener {
     public void onInventoryChanged(Inventory changed) {
         boolean hasRod = hasRod();
         if (hasRod && !hasAnyComponents()) {
-            setSlot(BUTTON_SLOT_INDEX, ButtonItem.getButton("disassemble")
-                    .setName(Text.literal("Disassemble Rod"))
+            setSlot(BUTTON_SLOT_INDEX, UIItem.getButton("disassemble")
+                    .setName(Text.translatable("gui.reel.rod_table.disassemble"))
                     .setCallback(this::disassembleRod));
         } else if (hasAllComponents() && !hasRod) {
-            setSlot(BUTTON_SLOT_INDEX, ButtonItem.getButton("assemble")
-                    .setName(Text.literal("Assemble Rod"))
+            setSlot(BUTTON_SLOT_INDEX, UIItem.getButton("assemble")
+                    .setName(Text.translatable("gui.reel.rod_table.assemble"))
                     .setCallback(this::assembleRod));
         } else {
             setSlot(BUTTON_SLOT_INDEX, ItemStack.EMPTY);

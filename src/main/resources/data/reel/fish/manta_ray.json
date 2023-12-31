@@ -1,0 +1,20 @@
+{
+  "item": "reel:manta_ray",
+  "speed": 5,
+  "temper": 2,
+  "minigame_pattern": "reel:half_pattern",
+  "weight": {
+	"min": 90,
+	"max": 200
+  },
+  "categories": [
+	{
+	  "id": "reel:tropical",
+	  "weight": 3
+	},
+	{
+	  "id": "reel:fast",
+	  "weight": 0
+	}
+  ]
+}

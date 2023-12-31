@@ -1,0 +1,16 @@
+{
+  "item": "reel:crimson_croaker",
+  "speed": 1,
+  "temper": 5,
+  "minigame_pattern": "reel:tri_pattern",
+  "weight": {
+	"min": 4,
+	"max": 12
+  },
+  "categories": [
+	{
+	  "id": "reel:boiling",
+	  "weight": 5
+	}
+  ]
+}

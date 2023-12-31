@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+	"b": {
+	  "item": "reel:fish_bones"
+	}
+  },
+  "pattern": [
+	" b ",
+	"b b",
+	" b "
+  ],
+  "result": {
+	"item": "reel:bonework_mechanism"
+  },
+  "show_notification": true
+}

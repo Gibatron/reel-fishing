@@ -1,0 +1,16 @@
+{
+  "item": "reel:spike",
+  "speed": 3,
+  "temper": 4,
+  "minigame_pattern": "reel:half_pattern",
+  "weight": {
+	"min": 5,
+	"max": 30
+  },
+  "categories": [
+	{
+	  "id": "reel:cold",
+	  "weight": 10
+	}
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "values": [
+    "minecraft:warm_ocean",
+    "minecraft:mangrove_swamp",
+    "minecraft:lush_caves",
+    "#minecraft:is_jungle"
+  ]
+}

@@ -14,22 +14,26 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-public class ButtonItem extends Item implements PolymerItem {
+public class UIItem extends Item implements PolymerItem {
     public static final HashMap<String, PolymerModelData> TEXTURES = new HashMap<>();
 
-    public ButtonItem(Settings settings) {
+    public UIItem(Settings settings) {
         super(settings);
     }
 
-    public static void registerButton(String textureId) {
+    public static void register(String textureId) {
         PolymerModelData model = PolymerResourcePackUtils.requestModel(Items.PAPER, ReelFishing.id("gui/" + textureId));
         TEXTURES.put(textureId, model);
     }
 
     public static GuiElementBuilder getButton(String textureId) {
+        return GuiElementBuilder.from(getStack(textureId));
+    }
+
+    public static ItemStack getStack(String textureId) {
         ItemStack itemStack = new ItemStack(ReelItems.BUTTON_ITEM);
         itemStack.getOrCreateNbt().putString("Texture", textureId);
-        return GuiElementBuilder.from(itemStack);
+        return itemStack;
     }
 
     @Override
