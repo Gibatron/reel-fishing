@@ -83,13 +83,9 @@ public class ReelFishing implements ModInitializer {
 	public static void load(MinecraftServer server) {
 		LOGGER.info("Loading modular fishing rod components...");
 		loadComponents(server);
-		LOGGER.info(ROD_TYPES.toString());
-		LOGGER.info(REEL_TYPES.toString());
-		LOGGER.info(HOOK_TYPES.toString());
 		LOGGER.info("Loaded modular fishing rod components!");
 		LOGGER.info("Loading fish...");
 		loadFish(server);
-		LOGGER.info(FISH_TYPES.toString());
 		LOGGER.info("Loaded fish!");
 	}
 
@@ -219,7 +215,6 @@ public class ReelFishing implements ModInitializer {
 			textures.addProperty("layer2", new Identifier(hookId.getNamespace(), "item/%s_hook".formatted(hookId.getPath())).toString());
 		model.add("textures", textures);
 		builder.addData("assets/%s/models/item/%s.json".formatted(rodId.getNamespace(), id), model.toString().getBytes(StandardCharsets.UTF_8));
-		LOGGER.info("{} {}", id, model);
 	}
 
 	public static void registerGuiModel(ResourcePackBuilder builder, String textureId) {
