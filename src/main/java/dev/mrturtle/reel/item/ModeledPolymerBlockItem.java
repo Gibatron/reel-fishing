@@ -14,9 +14,11 @@ import java.util.HashMap;
 
 public class ModeledPolymerBlockItem extends PolymerBlockItem {
     public HashMap<ModeledPolymerBlockItem, PolymerModelData> modelData = new HashMap<>();
+    public Item polymerItem;
 
     public ModeledPolymerBlockItem(Block block, Item.Settings settings, Item virtualItem) {
         super(block, settings, virtualItem);
+        polymerItem = virtualItem;
     }
 
     @Override
@@ -24,7 +26,7 @@ public class ModeledPolymerBlockItem extends PolymerBlockItem {
         return modelData.get(this).value();
     }
 
-    public void registerModel(String id, Item virtualItem) {
-        modelData.put(this, PolymerResourcePackUtils.requestModel(virtualItem, ReelFishing.id("item/%s".formatted(id))));
+    public void registerModel(String id) {
+        modelData.put(this, PolymerResourcePackUtils.requestModel(polymerItem, ReelFishing.id("item/%s".formatted(id))));
     }
 }

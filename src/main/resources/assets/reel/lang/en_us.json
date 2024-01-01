@@ -59,6 +59,7 @@
   "item.reel.cooked_warped_eel": "Cooked Warped Eel",
   "item.reel.fish_bones": "Fish Bones",
   "item.reel.bonework_mechanism": "Bonework Mechanism",
+  "itemgroup.reel": "Reel Fishing",
   "block.reel.rod_table": "Fishing Rod Bench",
   "rod.byCreator": "by %s",
   "rod.rod": "Rod: %s",

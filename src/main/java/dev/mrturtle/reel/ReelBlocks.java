@@ -13,14 +13,11 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 
 public class ReelBlocks {
-    public static final Block ROD_TABLE_BLOCK = register(new RodTableBlock(AbstractBlock.Settings.create().mapColor(MapColor.OAK_TAN).instrument(Instrument.BASS).strength(2.5F).sounds(BlockSoundGroup.WOOD).burnable()), "rod_table", Items.SMITHING_TABLE);
+    public static final Block ROD_TABLE_BLOCK = register(new RodTableBlock(AbstractBlock.Settings.create().mapColor(MapColor.OAK_TAN).instrument(Instrument.BASS).strength(2.5F).sounds(BlockSoundGroup.WOOD).burnable()), "rod_table");
 
     public static void initialize() {}
 
-    public static <T extends Block> T register(T block, String id, Item blockItem) {
-        ModeledPolymerBlockItem item = new ModeledPolymerBlockItem(block, new Item.Settings(), blockItem);
-        item.registerModel(id, blockItem);
-        Registry.register(Registries.ITEM, ReelFishing.id(id), item);
+    public static <T extends Block> T register(T block, String id) {
         return Registry.register(Registries.BLOCK, ReelFishing.id(id), block);
     }
 }

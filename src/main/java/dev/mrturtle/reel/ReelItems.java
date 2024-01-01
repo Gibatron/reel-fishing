@@ -1,13 +1,18 @@
 package dev.mrturtle.reel;
 
+import dev.mrturtle.reel.block.RodTableBlock;
+import dev.mrturtle.reel.item.ModeledPolymerBlockItem;
 import dev.mrturtle.reel.item.UIItem;
 import dev.mrturtle.reel.item.ModularFishingRodItem;
 import dev.mrturtle.reel.item.SimpleModeledPolymerItem;
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
 
 public class ReelItems {
     // Fishing Rod Components
@@ -37,6 +42,7 @@ public class ReelItems {
     // Other
     public static final Item FISH_BONES = register(new SimpleModeledPolymerItem(new Item.Settings(), Items.PAPER), "fish_bones");
     public static final Item BONEWORK_MECHANISM = register(new SimpleModeledPolymerItem(new Item.Settings(), Items.PAPER), "bonework_mechanism");
+    public static final Item ROD_TABLE = register(new ModeledPolymerBlockItem(ReelBlocks.ROD_TABLE_BLOCK, new Item.Settings(), Items.SMITHING_TABLE), "rod_table");
     // Fish
     // Shallow
     public static final Item KETTLE_FISH = registerCookableFood(2, 0.1f, 5, 0.6f, "kettle_fish");
@@ -66,11 +72,79 @@ public class ReelItems {
     public static final Item WARPED_EEL = registerCookableFood(2, 0.1f, 5, 0.6f, "warped_eel");
     public static final Item TUNA_MELT = registerFood(2, 0.1f, "tuna_melt");
 
-    public static void initialize() {}
+    public static void initialize() {
+        PolymerItemGroupUtils.registerPolymerItemGroup(ReelFishing.id("group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)
+                        .icon(COPPER_REEL::getDefaultStack)
+                        .displayName(Text.translatable("itemgroup.reel"))
+                        .entries(((context, entries) -> {
+                            //// Blocks
+                            entries.add(ROD_TABLE);
+                            //// Rods
+                            entries.add(OAK_ROD);
+                            entries.add(SPRUCE_ROD);
+                            entries.add(ACACIA_ROD);
+                            entries.add(BIRCH_ROD);
+                            entries.add(DARK_OAK_ROD);
+                            entries.add(JUNGLE_ROD);
+                            entries.add(CHERRY_ROD);
+                            entries.add(MANGROVE_ROD);
+                            entries.add(BAMBOO_ROD);
+                            entries.add(CRIMSON_ROD);
+                            entries.add(WARPED_ROD);
+                            //// Reels
+                            entries.add(WOODEN_REEL);
+                            entries.add(BAMBOO_REEL);
+                            entries.add(COPPER_REEL);
+                            //// Hooks
+                            entries.add(IRON_HOOK);
+                            entries.add(SPIKED_HOOK);
+                            entries.add(WEIGHTED_HOOK);
+                            //// Other
+                            entries.add(FISH_BONES);
+                            entries.add(BONEWORK_MECHANISM);
+                            //// Fish
+                            // Shallow
+                            entries.add(KETTLE_FISH);
+                            entries.add(GILDED_FISH);
+                            entries.add(ROSE_EYE);
+                            // Ocean
+                            entries.add(KELP_SPINE);
+                            entries.add(BLUNDER);
+                            entries.add(HALIBLOCK);
+                            // Deep
+                            entries.add(TRAWLER_FISH);
+                            entries.add(DEATH_EEL);
+                            entries.add(SQUISH_FISH);
+                            entries.add(ABYSSAL_GLOW_SQUID);
+                            entries.add(BABY_OARFISH);
+                            // Cold
+                            entries.add(RITUAL_FISH);
+                            entries.add(SPIKE);
+                            entries.add(ICE_CUBE_FISH);
+                            // Tropical
+                            entries.add(JESTER_FISH);
+                            entries.add(MANTA_RAY);
+                            entries.add(LIONFISH);
+                            // Boiling
+                            entries.add(BASSALT);
+                            entries.add(CRIMSON_CROAKER);
+                            entries.add(WARPED_EEL);
+                            entries.add(TUNA_MELT);
+                            //// Pre-assembled rods
+                            entries.add(ModularFishingRodItem.getStackWithComponents(OAK_ROD, WOODEN_REEL, IRON_HOOK), ItemGroup.StackVisibility.PARENT_TAB_ONLY);
+                            entries.add(ModularFishingRodItem.getStackWithComponents(BIRCH_ROD, WOODEN_REEL, SPIKED_HOOK), ItemGroup.StackVisibility.PARENT_TAB_ONLY);
+                            entries.add(ModularFishingRodItem.getStackWithComponents(MANGROVE_ROD, BAMBOO_REEL, IRON_HOOK), ItemGroup.StackVisibility.PARENT_TAB_ONLY);
+                            entries.add(ModularFishingRodItem.getStackWithComponents(SPRUCE_ROD, COPPER_REEL, WEIGHTED_HOOK), ItemGroup.StackVisibility.PARENT_TAB_ONLY);
+                        }))
+                .build());
+    }
 
     public static <T extends Item> T register(T item, String id) {
         if (item instanceof SimpleModeledPolymerItem) {
             ((SimpleModeledPolymerItem) item).registerModel(id);
+        }
+        if (item instanceof ModeledPolymerBlockItem) {
+            ((ModeledPolymerBlockItem) item).registerModel(id);
         }
         return Registry.register(Registries.ITEM, ReelFishing.id(id), item);
     }
