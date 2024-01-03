@@ -1,18 +1,20 @@
 package dev.mrturtle.reel;
 
-import dev.mrturtle.reel.block.RodTableBlock;
 import dev.mrturtle.reel.item.ModeledPolymerBlockItem;
 import dev.mrturtle.reel.item.UIItem;
 import dev.mrturtle.reel.item.ModularFishingRodItem;
 import dev.mrturtle.reel.item.SimpleModeledPolymerItem;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
-import net.minecraft.item.FoodComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Items;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ReelItems {
     // Fishing Rod Components
@@ -40,7 +42,12 @@ public class ReelItems {
     // UI Items
     public static final Item BUTTON_ITEM = register(new UIItem(new Item.Settings()), "ui_button");
     // Other
-    public static final Item FISH_BONES = register(new SimpleModeledPolymerItem(new Item.Settings(), Items.PAPER), "fish_bones");
+    public static final Item FISH_BONES = register(new SimpleModeledPolymerItem(new Item.Settings(), Items.PAPER) {
+        @Override
+        public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+            tooltip.add(Text.translatable("item.reel.fish_bones.tooltip").formatted(Formatting.GRAY));
+        }
+    }, "fish_bones");
     public static final Item BONEWORK_MECHANISM = register(new SimpleModeledPolymerItem(new Item.Settings(), Items.PAPER), "bonework_mechanism");
     public static final Item ROD_TABLE = register(new ModeledPolymerBlockItem(ReelBlocks.ROD_TABLE_BLOCK, new Item.Settings(), Items.SMITHING_TABLE), "rod_table");
     // Fish

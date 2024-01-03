@@ -168,17 +168,6 @@ public class ModularFishingRodItem extends Item implements PolymerItem {
         return rodStack;
     }
 
-    // Method to generate hardcoded ItemStack for item group icon
-    public static ItemStack getDefaultIconStack() {
-        ItemStack rodStack = new ItemStack(ReelItems.MODULAR_FISHING_ROD_ITEM);
-        // Copy components to rod NBT
-        NbtCompound nbt = rodStack.getOrCreateNbt();
-        nbt.putString(ModularFishingRodItem.ROD_KEY, ReelFishing.id("spruce_rod").toString());
-        nbt.putString(ModularFishingRodItem.REEL_KEY, ReelFishing.id("copper_reel").toString());
-        nbt.putString(ModularFishingRodItem.HOOK_KEY, ReelFishing.id("weighted_hook").toString());
-        return rodStack;
-    }
-
     public void registerModels() {
         modelData.clear();
         for (Identifier rodId : ReelFishing.ROD_TYPES.keySet()) {

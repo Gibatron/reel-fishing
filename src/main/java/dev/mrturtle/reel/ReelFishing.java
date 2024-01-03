@@ -12,6 +12,7 @@ import dev.mrturtle.reel.item.UIItem;
 import dev.mrturtle.reel.rod.HookType;
 import dev.mrturtle.reel.rod.ReelType;
 import dev.mrturtle.reel.rod.RodType;
+import eu.pb4.polymer.core.api.utils.PolymerUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.resourcepack.api.ResourcePackBuilder;
 import net.fabricmc.api.ModInitializer;
@@ -26,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class ReelFishing implements ModInitializer {
 	public static final String MOD_ID = "reel";
@@ -56,6 +59,10 @@ public class ReelFishing implements ModInitializer {
 		PolymerResourcePackUtils.addModAssets(MOD_ID);
 		PolymerResourcePackUtils.markAsRequired();
 		PolymerResourcePackUtils.RESOURCE_PACK_CREATION_EVENT.register((builder) -> {
+			if (PolymerUtils.isOnClientThread()) {
+				LOGGER.info("We're on the client, using builtin definitions...");
+				registerJankModels();
+			}
 			LOGGER.info("Generating modular fishing rod models...");
 			for (Identifier rodId : ReelFishing.ROD_TYPES.keySet()) {
 				registerModel(builder, rodId, null, null);
@@ -151,6 +158,7 @@ public class ReelFishing implements ModInitializer {
 		FISH_CATEGORIES_TO_IDS.clear();
 		FISH_IDS_TO_ITEMS.clear();
 		FISH_CATEGORIES.clear();
+		FISH_PATTERNS.clear();
 		var ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
 		// Load fish
 		for (var resource : server.getResourceManager().findResources("fish", (id) -> id.getPath().endsWith(".json")).entrySet()) {
@@ -192,6 +200,17 @@ public class ReelFishing implements ModInitializer {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private static void registerJankModels() {
+		// Register placeholder component types on the client so that the texture generation works
+		// These *should* get replaced once a world is loaded, so the missing data *shouldn't* be an issue
+		for (String id : List.of("acacia", "bamboo", "birch", "cherry", "crimson", "dark_oak", "jungle", "mangrove", "oak", "spruce", "warped"))
+			ROD_TYPES.put(id(id), new RodType(id(id), null, 0, 0));
+		for (String id : List.of("wooden", "bamboo", "copper"))
+			REEL_TYPES.put(id(id), new ReelType(id(id), 0));
+		for (String id : List.of("iron", "spiked", "weighted"))
+			HOOK_TYPES.put(id(id), new HookType(id(id), 0, 0, Optional.of(false), Optional.of(false), null));
 	}
 
 	public static void registerModel(ResourcePackBuilder builder, Identifier rodId, Identifier reelId, Identifier hookId) {

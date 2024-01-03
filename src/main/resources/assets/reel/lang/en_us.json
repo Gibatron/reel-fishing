@@ -58,6 +58,7 @@
   "item.reel.warped_eel": "Warped Eel",
   "item.reel.cooked_warped_eel": "Cooked Warped Eel",
   "item.reel.fish_bones": "Fish Bones",
+  "item.reel.fish_bones.tooltip": "Occasionally obtained by eating cooked fish",
   "item.reel.bonework_mechanism": "Bonework Mechanism",
   "itemgroup.reel": "Reel Fishing",
   "block.reel.rod_table": "Fishing Rod Bench",
