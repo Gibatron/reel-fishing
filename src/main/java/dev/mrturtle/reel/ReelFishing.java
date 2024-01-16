@@ -94,6 +94,8 @@ public class ReelFishing implements ModInitializer {
 		LOGGER.info("Loading fish...");
 		loadFish(server);
 		LOGGER.info("Loaded fish!");
+		// This forces the models to be properly registered for the fishing rods on a server without AutoHost enabled
+		((ModularFishingRodItem) ReelItems.MODULAR_FISHING_ROD_ITEM).registerModels();
 	}
 
 	public static void loadComponents(MinecraftServer server) {
