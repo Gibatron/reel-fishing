@@ -23,5 +23,7 @@ public class GuiElements {
         UIItem.register("rod_cross_pattern");
         UIItem.register("rod_warped_pattern");
         UIItem.register("rod_empty_pattern");
+        UIItem.register("inventory_text_cover");
+        UIItem.register("basstiary_icon");
     }
 }

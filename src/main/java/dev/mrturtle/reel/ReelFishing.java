@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.mrturtle.reel.fish.FishCategory;
 import dev.mrturtle.reel.fish.FishPattern;
 import dev.mrturtle.reel.fish.FishType;
+import dev.mrturtle.reel.gui.BasstiaryGui;
 import dev.mrturtle.reel.gui.GuiElements;
 import dev.mrturtle.reel.item.ModularFishingRodItem;
 import dev.mrturtle.reel.item.UIItem;
@@ -79,8 +80,14 @@ public class ReelFishing implements ModInitializer {
 			for (String textureId : UIItem.TEXTURES.keySet()) {
 				registerGuiModel(builder, textureId);
 			}
+			BasstiaryGui.registerModels(builder);
 		});
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ReelFishing.load(server));
+		ServerLifecycleEvents.SERVER_STARTED.register((server -> {
+			if (PolymerUtils.isSingleplayer()) {
+				PolymerResourcePackUtils.buildMain();
+			}
+		}));
 		ReelItems.initialize();
 		ReelBlocks.initialize();
 		ReelEntities.initialize();
@@ -208,11 +215,11 @@ public class ReelFishing implements ModInitializer {
 		// Register placeholder component types on the client so that the texture generation works
 		// These *should* get replaced once a world is loaded, so the missing data *shouldn't* be an issue
 		for (String id : List.of("acacia", "bamboo", "birch", "cherry", "crimson", "dark_oak", "jungle", "mangrove", "oak", "spruce", "warped"))
-			ROD_TYPES.put(id(id), new RodType(id(id), null, 0, 0));
+			ROD_TYPES.putIfAbsent(id(id), new RodType(id(id), null, 0, 0));
 		for (String id : List.of("wooden", "bamboo", "copper"))
-			REEL_TYPES.put(id(id), new ReelType(id(id), 0));
+			REEL_TYPES.putIfAbsent(id(id), new ReelType(id(id), 0));
 		for (String id : List.of("iron", "spiked", "weighted"))
-			HOOK_TYPES.put(id(id), new HookType(id(id), 0, 0, Optional.of(false), Optional.of(false), null));
+			HOOK_TYPES.putIfAbsent(id(id), new HookType(id(id), 0, 0, Optional.of(false), Optional.of(false), null));
 	}
 
 	public static void registerModel(ResourcePackBuilder builder, Identifier rodId, Identifier reelId, Identifier hookId) {
@@ -239,12 +246,15 @@ public class ReelFishing implements ModInitializer {
 	}
 
 	public static void registerGuiModel(ResourcePackBuilder builder, String textureId) {
+		String path = "assets/reel/models/gui/%s.json".formatted(textureId);
+		if (builder.getData(path) != null)
+			return;
 		JsonObject model = new JsonObject();
 		model.addProperty("parent", "item/handheld");
 		JsonObject textures = new JsonObject();
 		textures.addProperty("layer0", id("item/gui/%s".formatted(textureId)).toString());
 		model.add("textures", textures);
-		builder.addData("assets/reel/models/gui/%s.json".formatted(textureId), model.toString().getBytes(StandardCharsets.UTF_8));
+		builder.addData(path, model.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public static Identifier getRodFromItem(Item item) {

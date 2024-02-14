@@ -1,9 +1,6 @@
 package dev.mrturtle.reel;
 
-import dev.mrturtle.reel.item.ModeledPolymerBlockItem;
-import dev.mrturtle.reel.item.UIItem;
-import dev.mrturtle.reel.item.ModularFishingRodItem;
-import dev.mrturtle.reel.item.SimpleModeledPolymerItem;
+import dev.mrturtle.reel.item.*;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.*;
@@ -50,6 +47,7 @@ public class ReelItems {
     }, "fish_bones");
     public static final Item BONEWORK_MECHANISM = register(new SimpleModeledPolymerItem(new Item.Settings(), Items.PAPER), "bonework_mechanism");
     public static final Item ROD_TABLE = register(new ModeledPolymerBlockItem(ReelBlocks.ROD_TABLE_BLOCK, new Item.Settings(), Items.SMITHING_TABLE), "rod_table");
+    public static final Item BASSTIARY = register(new BasstiaryItem(new Item.Settings().maxCount(1), Items.PAPER), "basstiary");
     // Fish
     // Shallow
     public static final Item KETTLE_FISH = registerCookableFood(2, 0.1f, 5, 0.6f, "kettle_fish");

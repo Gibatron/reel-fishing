@@ -191,9 +191,11 @@ public class MinigameFishingBobberEntity extends ProjectileEntity implements Pol
 
     @Override
     public void remove(RemovalReason reason) {
-        ((PlayerEntityAccess) player).setMinigameBobber(null);
-        if (!attemptToResetCastState(player.getMainHandStack()))
-            attemptToResetCastState(player.getOffHandStack());
+        if (player != null) {
+            ((PlayerEntityAccess) player).setMinigameBobber(null);
+            if (!attemptToResetCastState(player.getMainHandStack()))
+                attemptToResetCastState(player.getOffHandStack());
+        }
         super.remove(reason);
     }
 
