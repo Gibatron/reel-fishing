@@ -158,7 +158,10 @@ public class ReelFishing implements ModInitializer {
 		if (!Files.exists(directoryPath))
 			return;
 		try (Stream<Path> paths = Files.walk(directoryPath)) {
-			paths.parallel().filter((filePath) -> filePath.toString().endsWith(".json")).forEach((filePath) -> {
+			paths.parallel()
+					.filter((filePath) -> filePath.toString().endsWith(".json"))
+					.sorted((path1, path2) -> path1.getFileName().toString().compareToIgnoreCase(path2.getFileName().toString())) // Sort alphabetically, fixes not deterministic loading issues
+					.forEachOrdered((filePath) -> {
 				try (BufferedReader reader = Files.newBufferedReader(filePath)) {
 					String fileName = filePath.getFileName().toString();
 					String nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
