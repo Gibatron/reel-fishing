@@ -2,6 +2,7 @@ package dev.mrturtle.reel;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import dev.mrturtle.reel.fish.FishCategory;
 import dev.mrturtle.reel.fish.FishPattern;
@@ -13,23 +14,26 @@ import dev.mrturtle.reel.item.UIItem;
 import dev.mrturtle.reel.rod.HookType;
 import dev.mrturtle.reel.rod.ReelType;
 import dev.mrturtle.reel.rod.RodType;
-import eu.pb4.polymer.core.api.utils.PolymerUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.resourcepack.api.ResourcePackBuilder;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 public class ReelFishing implements ModInitializer {
 	public static final String MOD_ID = "reel";
@@ -60,10 +64,7 @@ public class ReelFishing implements ModInitializer {
 		PolymerResourcePackUtils.addModAssets(MOD_ID);
 		PolymerResourcePackUtils.markAsRequired();
 		PolymerResourcePackUtils.RESOURCE_PACK_CREATION_EVENT.register((builder) -> {
-			if (PolymerUtils.isOnClientThread()) {
-				LOGGER.info("We're on the client, using builtin definitions...");
-				registerJankModels();
-			}
+			loadReelData();
 			LOGGER.info("Generating modular fishing rod models...");
 			for (Identifier rodId : ReelFishing.ROD_TYPES.keySet()) {
 				registerModel(builder, rodId, null, null);
@@ -82,11 +83,12 @@ public class ReelFishing implements ModInitializer {
 			}
 			BasstiaryGui.registerModels(builder);
 		});
-		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ReelFishing.load(server));
 		ServerLifecycleEvents.SERVER_STARTED.register((server -> {
-			if (PolymerUtils.isSingleplayer()) {
-				PolymerResourcePackUtils.buildMain();
-			}
+			loadReelData();
+			// This forces the models to be properly registered for the fishing rods on a server without AutoHost enabled
+			// Something is going wrong here causing a model id mismatch between a non AutoHost server and a client with the mod
+			((ModularFishingRodItem) ReelItems.MODULAR_FISHING_ROD_ITEM).registerModels();
+			BasstiaryGui.registerModels(null);
 		}));
 		ReelItems.initialize();
 		ReelBlocks.initialize();
@@ -94,19 +96,8 @@ public class ReelFishing implements ModInitializer {
 		GuiElements.initialize();
 	}
 
-	public static void load(MinecraftServer server) {
-		LOGGER.info("Loading modular fishing rod components...");
-		loadComponents(server);
-		LOGGER.info("Loaded modular fishing rod components!");
-		LOGGER.info("Loading fish...");
-		loadFish(server);
-		LOGGER.info("Loaded fish!");
-		// This forces the models to be properly registered for the fishing rods on a server without AutoHost enabled
-		((ModularFishingRodItem) ReelItems.MODULAR_FISHING_ROD_ITEM).registerModels();
-	}
-
-	public static void loadComponents(MinecraftServer server) {
-		// Clear all current components
+	public static void loadReelData() {
+		// Clear all previous data
 		ROD_TYPES.clear();
 		ROD_ITEMS_TO_IDS.clear();
 		ROD_IDS_TO_ITEMS.clear();
@@ -116,110 +107,70 @@ public class ReelFishing implements ModInitializer {
 		HOOK_TYPES.clear();
 		HOOK_ITEMS_TO_IDS.clear();
 		HOOK_IDS_TO_ITEMS.clear();
-		var ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
-		// Load rods
-		for (var resource : server.getResourceManager().findResources("reel_components/rods", (id) -> id.getPath().endsWith(".json")).entrySet()) {
-			Identifier rodId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("reel_components/rods/".length(), resource.getKey().getPath().length() - 5));
-			try {
-				RodType rodType = RodType.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
-				Item rodItem = Registries.ITEM.get(rodType.itemId());
-				ROD_TYPES.put(rodId, rodType);
-				ROD_ITEMS_TO_IDS.put(rodItem, rodId);
-				ROD_IDS_TO_ITEMS.put(rodId, rodItem);
-			} catch (Throwable e) {
-				LOGGER.warn("Failed to parse rod type {}!", resource.getKey().toString());
-				e.printStackTrace();
-			}
-		}
-		// Load reels
-		for (var resource : server.getResourceManager().findResources("reel_components/reels", (id) -> id.getPath().endsWith(".json")).entrySet()) {
-			Identifier reelId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("reel_components/reels/".length(), resource.getKey().getPath().length() - 5));
-			try {
-				ReelType reelType = ReelType.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
-				Item reelItem = Registries.ITEM.get(reelType.itemId());
-				REEL_TYPES.put(reelId, reelType);
-				REEL_ITEMS_TO_IDS.put(reelItem, reelId);
-				REEL_IDS_TO_ITEMS.put(reelId, reelItem);
-			} catch (Throwable e) {
-				LOGGER.warn("Failed to parse reel type {}!", resource.getKey().toString());
-				e.printStackTrace();
-			}
-		}
-		// Load hooks
-		for (var resource : server.getResourceManager().findResources("reel_components/hooks", (id) -> id.getPath().endsWith(".json")).entrySet()) {
-			Identifier hookId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("reel_components/hooks/".length(), resource.getKey().getPath().length() - 5));
-			try {
-				HookType hookType = HookType.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
-				Item hookItem = Registries.ITEM.get(hookType.itemId());
-				HOOK_TYPES.put(hookId, hookType);
-				HOOK_ITEMS_TO_IDS.put(hookItem, hookId);
-				HOOK_IDS_TO_ITEMS.put(hookId, hookItem);
-			} catch (Throwable e) {
-				LOGGER.warn("Failed to parse hook type {}!", resource.getKey().toString());
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static void loadFish(MinecraftServer server) {
-		// Clear all current fish
 		FISH_TYPES.clear();
 		FISH_CATEGORIES_TO_IDS.clear();
 		FISH_IDS_TO_ITEMS.clear();
 		FISH_CATEGORIES.clear();
 		FISH_PATTERNS.clear();
-		var ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
-		// Load fish
-		for (var resource : server.getResourceManager().findResources("fish", (id) -> id.getPath().endsWith(".json")).entrySet()) {
-			Identifier fishId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("fish/".length(), resource.getKey().getPath().length() - 5));
-			try {
-				FishType fishType = FishType.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
-				Item fishItem = Registries.ITEM.get(fishType.itemId());
-				FISH_TYPES.put(fishId, fishType);
-				for (FishType.CategoryData categoryData : fishType.categories()) {
-					HashMap<Identifier, Integer> map = FISH_CATEGORIES_TO_IDS.getOrDefault(categoryData.id(), new HashMap<>());
-					map.put(fishId, categoryData.weight());
-					FISH_CATEGORIES_TO_IDS.put(categoryData.id(), map);
-				}
-				FISH_IDS_TO_ITEMS.put(fishId, fishItem);
-			} catch (Throwable e) {
-				LOGGER.warn("Failed to parse fish type {}!", resource.getKey().toString());
-				e.printStackTrace();
+		// Load new data
+		LOGGER.info("Loading data...");
+		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
+			for (Path path : container.getRootPaths()) {
+				// Component data
+				loadDataFromPath(path, "reel_components/rods", container, RodType.CODEC, (id, rodType) -> {
+					Item rodItem = Registries.ITEM.get(rodType.itemId());
+					ROD_TYPES.put(id, rodType);
+					ROD_ITEMS_TO_IDS.put(rodItem, id);
+					ROD_IDS_TO_ITEMS.put(id, rodItem);
+				});
+				loadDataFromPath(path, "reel_components/reels", container, ReelType.CODEC, (id, reelType) -> {
+					Item reelItem = Registries.ITEM.get(reelType.itemId());
+					REEL_TYPES.put(id, reelType);
+					REEL_ITEMS_TO_IDS.put(reelItem, id);
+					REEL_IDS_TO_ITEMS.put(id, reelItem);
+				});
+				loadDataFromPath(path, "reel_components/hooks", container, HookType.CODEC, (id, hookType) -> {
+					Item hookItem = Registries.ITEM.get(hookType.itemId());
+					HOOK_TYPES.put(id, hookType);
+					HOOK_ITEMS_TO_IDS.put(hookItem, id);
+					HOOK_IDS_TO_ITEMS.put(id, hookItem);
+				});
+				// Fish data
+				loadDataFromPath(path, "fish", container, FishType.CODEC, (id, fishType) -> {
+					Item fishItem = Registries.ITEM.get(fishType.itemId());
+					FISH_TYPES.put(id, fishType);
+					for (FishType.CategoryData categoryData : fishType.categories()) {
+						HashMap<Identifier, Integer> map = FISH_CATEGORIES_TO_IDS.getOrDefault(categoryData.id(), new HashMap<>());
+						map.put(id, categoryData.weight());
+						FISH_CATEGORIES_TO_IDS.put(categoryData.id(), map);
+					}
+					FISH_IDS_TO_ITEMS.put(id, fishItem);
+				});
+				loadDataFromPath(path, "fish_categories", container, FishCategory.CODEC, FISH_CATEGORIES::put);
+				loadDataFromPath(path, "fish_patterns", container, FishPattern.CODEC, FISH_PATTERNS::put);
 			}
 		}
-		// Load fish categories
-		for (var resource : server.getResourceManager().findResources("fish_categories", (id) -> id.getPath().endsWith(".json")).entrySet()) {
-			Identifier categoryId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("fish_categories/".length(), resource.getKey().getPath().length() - 5));
-			try {
-				FishCategory fishCategory = FishCategory.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
-				FISH_CATEGORIES.put(categoryId, fishCategory);
-			} catch (Throwable e) {
-				LOGGER.warn("Failed to parse fish category {}!", resource.getKey().toString());
-				e.printStackTrace();
-			}
-		}
-		// Load fish patterns
-		for (var resource : server.getResourceManager().findResources("fish_patterns", (id) -> id.getPath().endsWith(".json")).entrySet()) {
-			Identifier patternId = new Identifier(resource.getKey().getNamespace(), resource.getKey().getPath().substring("fish_patterns/".length(), resource.getKey().getPath().length() - 5));
-			try {
-				FishPattern fishPattern = FishPattern.CODEC.decode(ops, JsonParser.parseReader(resource.getValue().getReader())).getOrThrow(false, (message) -> {}).getFirst();
-				FISH_PATTERNS.put(patternId, fishPattern);
-			} catch (Throwable e) {
-				LOGGER.warn("Failed to parse fish category {}!", resource.getKey().toString());
-				e.printStackTrace();
-			}
-		}
+		LOGGER.info("Loaded data!");
 	}
 
-	private static void registerJankModels() {
-		// Register placeholder component types on the client so that the texture generation works
-		// These *should* get replaced once a world is loaded, so the missing data *shouldn't* be an issue
-		for (String id : List.of("acacia", "bamboo", "birch", "cherry", "crimson", "dark_oak", "jungle", "mangrove", "oak", "spruce", "warped"))
-			ROD_TYPES.putIfAbsent(id(id), new RodType(id(id), null, 0, 0));
-		for (String id : List.of("wooden", "bamboo", "copper"))
-			REEL_TYPES.putIfAbsent(id(id), new ReelType(id(id), 0));
-		for (String id : List.of("iron", "spiked", "weighted"))
-			HOOK_TYPES.putIfAbsent(id(id), new HookType(id(id), 0, 0, Optional.of(false), Optional.of(false), null));
+	public static <T> void loadDataFromPath(Path path, String directory, ModContainer container, Codec<T> CODEC, BiConsumer<Identifier, T> runnable) {
+		Path directoryPath = path.resolve("data/" + container.getMetadata().getId() + "/" + directory);
+		if (!Files.exists(directoryPath))
+			return;
+		try (Stream<Path> paths = Files.walk(directoryPath)) {
+			paths.parallel().filter((filePath) -> filePath.toString().endsWith(".json")).forEach((filePath) -> {
+				try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+					String fileName = filePath.getFileName().toString();
+					String nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
+					T type = CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow(false, (message) -> {}).getFirst();
+					runnable.accept(new Identifier(container.getMetadata().getId(), nameWithoutExtension), type);
+				} catch (IOException e) {
+					LOGGER.error("Failed to parse type {}", filePath);
+				}
+			});
+		} catch (IOException e) {
+			LOGGER.error("Failed to read data from {}", container.getMetadata().getId());
+		}
 	}
 
 	public static void registerModel(ResourcePackBuilder builder, Identifier rodId, Identifier reelId, Identifier hookId) {

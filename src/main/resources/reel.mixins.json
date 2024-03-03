@@ -6,7 +6,6 @@
 	"FishingBobberEntityAccess",
 	"FishingBobberEntityMixin",
 	"LivingEntityMixin",
-	"MinecraftServerMixin",
 	"PlayerEntityMixin"
   ],
   "injectors": {
